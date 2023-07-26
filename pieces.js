@@ -30,7 +30,7 @@ for (let i = 0; i < pieces.length; i++) {
     const disponibiliteElement = document.createElement("p");
     disponibiliteElement.innerText = pieces[i].disponibilite ? "En stock" : "Rupture de stock";
 
-    
+
     // On rattache la balise article à la section Fiches
     sectionFiches.appendChild(pieceElement);
     // On rattache l’image à pieceElement (la balise article)
@@ -41,4 +41,43 @@ for (let i = 0; i < pieces.length; i++) {
     pieceElement.appendChild(categorieElement);
     pieceElement.appendChild(descriptionElement);
     pieceElement.appendChild(disponibiliteElement);
-    }
+}
+
+//gestion des bouttons 
+    const boutonTrier = document.querySelector(".btn-trier");
+
+    boutonTrier.addEventListener("click", function () {
+        const piecesOrdonnees = Array.from(pieces);
+        piecesOrdonnees.sort(function (a, b) {
+            return a.prix - b.prix;
+        });
+        console.log(piecesOrdonnees);
+    });
+
+    const boutonFiltrer = document.querySelector(".btn-filtrer");
+
+    boutonFiltrer.addEventListener("click", function () {
+        const piecesFiltrees = pieces.filter(function (piece) {
+            return piece.prix <= 35;
+        });
+        console.log(piecesFiltrees)
+    });
+
+    const boutonDecroissant = document.querySelector(".btn-decroissant");
+
+    boutonDecroissant.addEventListener("click", function () {
+        const piecesOrdonnees = Array.from(pieces);
+        piecesOrdonnees.sort(function (a, b) {
+            return b.prix - a.prix;
+        });
+        console.log(piecesOrdonnees);
+    });
+
+    const boutonNoDescription = document.querySelector(".btn-nodesc");
+
+    boutonNoDescription.addEventListener("click", function () {
+        const piecesFiltrees = pieces.filter(function (piece) {
+            return piece.description
+        });
+        console.log(piecesFiltrees)
+    });

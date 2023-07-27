@@ -1,3 +1,4 @@
+/* global Chart */
 export function ajoutListenersAvis() {
     const piecesElements = document.querySelectorAll(".fiches article button");
 
@@ -79,7 +80,7 @@ export async function afficherGraphiqueAvis() {
         },
     };
     // Rendu du graphique dans l'élément canvas
-    const graphiqueAvis = new Chart(
+    new Chart(
         document.querySelector("#graphique-avis"),
         config,
     );
@@ -116,12 +117,12 @@ const dataDispo = {
     }],
 };
 // Objet de configuration final
-const configDispo  = {
+const configDispo = {
     type: "bar",
     data: dataDispo,
 };
 // Rendu du graphique dans l'élément canvas
-const graphiqueNbCommentaire = new Chart(
+new Chart(
     document.querySelector("#graphique-nombre-commentaire"),
     configDispo,
 );

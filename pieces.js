@@ -1,11 +1,11 @@
 import { ajoutListenersAvis, ajoutListenerEnvoyerAvis, afficherAvis, afficherGraphiqueAvis } from "./avis.js";
 
 //Récupération des pièces eventuellement stockées dans le localStorage
-let pieces = window.localStorage.getItem('pieces');
+let pieces = window.localStorage.getItem("pieces");
 if (pieces === null) {
 
     // Récupération des pièces depuis l'API
-    const reponse = await fetch('http://localhost:8081/pieces/');
+    const reponse = await fetch("http://localhost:8081/pieces/");
     pieces = await reponse.json();
 
     // Transformation des pièces en JSON
@@ -18,7 +18,7 @@ if (pieces === null) {
 }
 
 // on appelle la fonction pour ajouter le listener au formulaire
-ajoutListenerEnvoyerAvis()
+ajoutListenerEnvoyerAvis();
 
 // Fonction qui génère toute la page web
 function genererPieces(pieces) {
@@ -129,52 +129,52 @@ const boutonNoDescription = document.querySelector(".btn-nodesc");
 
 boutonNoDescription.addEventListener("click", function () {
     const piecesFiltrees = pieces.filter(function (piece) {
-        return piece.description
+        return piece.description;
     });
     document.querySelector(".fiches").innerHTML = "";
-    genererPieces(piecesDeordonnees);
+    genererPieces(piecesFiltrees);
 });
 
 const noms = pieces.map(piece => piece.nom);
 for (let i = pieces.length - 1; i >= 0; i--) {
     if (pieces[i].prix > 35) {
-        noms.splice(i, 1)
+        noms.splice(i, 1);
     }
 }
-console.log(noms)
+console.log(noms);
 
 //Création de la liste
-const abordablesElements = document.createElement('ul');
+const abordablesElements = document.createElement("ul");
 //Ajout de chaque nom à la liste
 for (let i = 0; i < noms.length; i++) {
-    const nomElement = document.createElement('li');
+    const nomElement = document.createElement("li");
     nomElement.innerText = noms[i];
-    abordablesElements.appendChild(nomElement)
+    abordablesElements.appendChild(nomElement);
 }
 // Ajout de l'en-tête puis de la liste au bloc résultats filtres
-document.querySelector('.abordables')
-    .appendChild(abordablesElements)
+document.querySelector(".abordables")
+    .appendChild(abordablesElements);
 
 const nomsDisponibles = pieces.map(piece => piece.nom);
 const prixDisponibles = pieces.map(piece => piece.prix);
 for (let i = pieces.length - 1; i >= 0; i--) {
     if (!pieces[i].disponibilite) {
-        nomsDisponibles.splice(i, 1)
-        prixDisponibles.splice(i, 1)
+        nomsDisponibles.splice(i, 1);
+        prixDisponibles.splice(i, 1);
     }
 }
 
 //Création de la liste
-const disponiblesElements = document.createElement('ul');
+const disponiblesElements = document.createElement("ul");
 //Ajout de chaque nom à la liste
 for (let i = 0; i < nomsDisponibles.length; i++) {
-    const nomElement = document.createElement('li');
+    const nomElement = document.createElement("li");
     nomElement.innerText = `${nomsDisponibles[i]} - ${prixDisponibles[i]}€`;
-    disponiblesElements.appendChild(nomElement)
+    disponiblesElements.appendChild(nomElement);
 }
 // Ajout de l'en-tête puis de la liste au bloc résultats filtres
-document.querySelector('.disponibles')
-    .appendChild(disponiblesElements)
+document.querySelector(".disponibles")
+    .appendChild(disponiblesElements);
 
 
 const inputPrixMax = document.querySelector("#prix-max");

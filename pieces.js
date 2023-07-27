@@ -1,5 +1,7 @@
+import { ajoutListenersAvis } from "./avis.js";
 // Récupération des pièces depuis le fichier JSON
-const pieces = await fetch("pieces-autos.json").then(pieces => pieces.json());
+const reponse = await fetch(`http://localhost:8081/pieces`);
+const pieces = await reponse.json();
 
 // Fonction qui génère toute la page web
 function genererPieces(pieces) {
@@ -32,6 +34,10 @@ function genererPieces(pieces) {
         const disponibiliteElement = document.createElement("p");
         disponibiliteElement.innerText = pieces[i].disponibilite ? "En stock" : "Rupture de stock";
 
+        const avisBouton = document.createElement("button");
+        avisBouton.dataset.id = pieces[i].id;
+        avisBouton.textContent = "Afficher les avis";
+
 
         // On rattache la balise article à la section Fiches
         sectionFiches.appendChild(pieceElement);
@@ -43,7 +49,9 @@ function genererPieces(pieces) {
         pieceElement.appendChild(categorieElement);
         pieceElement.appendChild(descriptionElement);
         pieceElement.appendChild(disponibiliteElement);
+        pieceElement.appendChild(avisBouton);
     }
+    ajoutListenersAvis();
 }
 
 // Premier affichage de la page
@@ -112,8 +120,8 @@ for (let i = 0; i < noms.length; i++) {
     abordablesElements.appendChild(nomElement)
 }
 // Ajout de l'en-tête puis de la liste au bloc résultats filtres
-/*document.querySelector('.abordables')
-    .appendChild(abordablesElements)*/
+document.querySelector('.abordables')
+    .appendChild(abordablesElements)
 
 const nomsDisponibles = pieces.map(piece => piece.nom);
 const prixDisponibles = pieces.map(piece => piece.prix);
@@ -133,8 +141,8 @@ for (let i = 0; i < nomsDisponibles.length; i++) {
     disponiblesElements.appendChild(nomElement)
 }
 // Ajout de l'en-tête puis de la liste au bloc résultats filtres
-/*document.querySelector('.disponibles')
-    .appendChild(disponiblesElements)*/
+document.querySelector('.disponibles')
+    .appendChild(disponiblesElements)
 
 
 const inputPrixMax = document.querySelector("#prix-max");

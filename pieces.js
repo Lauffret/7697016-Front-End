@@ -1,7 +1,22 @@
-import { ajoutListenersAvis, ajoutListenerEnvoyerAvis } from "./avis.js";
-// Récupération des pièces depuis le fichier JSON
-const reponse = await fetch(`http://localhost:8081/pieces`);
-const pieces = await reponse.json();
+import { ajoutListenersAvis, ajoutListenerEnvoyerAvis, afficherAvis } from "./avis.js";
+
+//Récupération des pièces eventuellement stockées dans le localStorage
+let pieces = window.localStorage.getItem('pieces');
+if (pieces === null) {
+
+    // Récupération des pièces depuis l'API
+    const reponse = await fetch('http://localhost:8081/pieces/');
+    pieces = await reponse.json();
+
+    // Transformation des pièces en JSON
+    const valeurPieces = JSON.stringify(pieces);
+
+    // Stockage des informations dans le localStorage
+    window.localStorage.setItem("pieces", valeurPieces);
+} else {
+    pieces = JSON.parse(pieces);
+}
+
 // on appelle la fonction pour ajouter le listener au formulaire
 ajoutListenerEnvoyerAvis()
 
@@ -41,6 +56,9 @@ function genererPieces(pieces) {
         avisBouton.textContent = "Afficher les avis";
 
 
+        pieceElement.dataset.id = pieces[i].id;
+
+
         // On rattache la balise article à la section Fiches
         sectionFiches.appendChild(pieceElement);
         // On rattache l’image à pieceElement (la balise article)
@@ -59,6 +77,18 @@ function genererPieces(pieces) {
 // Premier affichage de la page
 genererPieces(pieces);
 
+
+for (let i = 0; i < pieces.length; i++) {
+    const id = pieces[i].id;
+    const avisJSON = window.localStorage.getItem(`avis-piece-${id}`);
+    const avis = JSON.parse(avisJSON);
+
+    if (avis !== null) {
+        const pieceElement = document.querySelector(`article[data-id="${id}"]`);
+        afficherAvis(pieceElement, avis);
+    }
+}
+
 //gestion des bouttons 
 const boutonTrier = document.querySelector(".btn-trier");
 
@@ -69,8 +99,8 @@ boutonTrier.addEventListener("click", function () {
     });
 
     // Effacement de l'écran et regénération de la page
-  document.querySelector(".fiches").innerHTML = "";
-  genererPieces(piecesOrdonnees);
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesOrdonnees);
 });
 
 const boutonFiltrer = document.querySelector(".btn-filtrer");
@@ -80,8 +110,8 @@ boutonFiltrer.addEventListener("click", function () {
         return piece.prix <= 35;
     });
     // Effacement de l'écran et regénération de la page avec les pièces filtrées uniquement
-  document.querySelector(".fiches").innerHTML = "";
-  genererPieces(piecesFiltrees);
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
 });
 
 const boutonDecroissant = document.querySelector(".btn-decroissant");
@@ -92,7 +122,7 @@ boutonDecroissant.addEventListener("click", function () {
         return b.prix - a.prix;
     });
     document.querySelector(".fiches").innerHTML = "";
-  genererPieces(piecesDeordonnees);
+    genererPieces(piecesDeordonnees);
 });
 
 const boutonNoDescription = document.querySelector(".btn-nodesc");
@@ -102,7 +132,7 @@ boutonNoDescription.addEventListener("click", function () {
         return piece.description
     });
     document.querySelector(".fiches").innerHTML = "";
-  genererPieces(piecesDeordonnees);
+    genererPieces(piecesDeordonnees);
 });
 
 const noms = pieces.map(piece => piece.nom);
@@ -150,9 +180,19 @@ document.querySelector('.disponibles')
 const inputPrixMax = document.querySelector("#prix-max");
 
 inputPrixMax.addEventListener("input", function () {
-    const piecesFiltrees = pieces.filter( (piece) =>piece.prix <= inputPrixMax.value);
+    const piecesFiltrees = pieces.filter((piece) => piece.prix <= inputPrixMax.value);
     // Effacement de l'écran et regénération de la page avec les pièces filtrées uniquement
-  document.querySelector(".fiches").innerHTML = "";
-  genererPieces(piecesFiltrees);
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
 });
 
+// Ajout du listener pour mettre à jour des données du localStorage
+const boutonMettreAJour = document.querySelector(".btn-maj");
+boutonMettreAJour.addEventListener("click", function () {
+    window.localStorage.removeItem("pieces");
+});
+
+const boutonMettreAJourSite = document.querySelector(".btn-maj-site");
+boutonMettreAJourSite.addEventListener("click", function () {
+    window.localStorage.clear();
+});

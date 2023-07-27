@@ -3,21 +3,26 @@ export function ajoutListenersAvis() {
 
     for (let i = 0; i < piecesElements.length; i++) {
         piecesElements[i].addEventListener("click", async function (event) {
+
+            // Récupération des avis depuis l'API
             const id = event.target.dataset.id;
             const reponse = await fetch(`http://localhost:8081/pieces/${id}/avis`);
-
             const avis = await reponse.json();
 
-            const pieceElement = event.target.parentElement;
+            window.localStorage.setItem(`avis-piece-${id}`, JSON.stringify(avis));
 
-            const avisElement = document.createElement("p");
-            for (let i = 0; i < avis.length; i++) {
-                avisElement.innerHTML += `${avis[i].utilisateur}: ${avis[i].nbEtoiles} - ${avis[i].commentaire} <br>`;
-            }
-
-            pieceElement.appendChild(avisElement);
+            afficherAvis(event.target.parentElement, avis);
         });
     }
+}
+
+export function afficherAvis(pieceElement, avis) {
+    const avisElement = document.createElement("p");
+    for (let i = 0; i < avis.length; i++) {
+        avisElement.innerHTML += `${avis[i].utilisateur}: ${avis[i].nbEtoiles} - ${avis[i].commentaire} <br>`;
+    }
+
+    pieceElement.appendChild(avisElement);
 }
 
 export function ajoutListenerEnvoyerAvis() {
